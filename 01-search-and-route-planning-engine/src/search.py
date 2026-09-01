@@ -471,3 +471,264 @@ def uniform_cost_search(
     )
 
 
+def greedy_best_first_search(
+    graph,
+    start,
+    goal,
+    heuristic,
+):
+    if start not in graph:
+        raise ValueError(
+            f"Start node {start!r} does not exist in graph."
+        )
+
+    if goal not in graph:
+        raise ValueError(
+            f"Goal node {goal!r} does not exist in graph."
+        )
+
+    start_node = SearchNode(
+        state=start,
+        parent=None,
+        path_cost=0.0,
+        depth=0,
+    )
+
+    counter = count()
+
+    frontier = []
+
+    start_priority = heuristic(
+        start,
+        goal,
+    )
+
+    heapq.heappush(
+        frontier,
+        (
+            start_priority,
+            next(counter),
+            start_node,
+        ),
+    )
+
+    visited = {start}
+
+    traversal_order = []
+
+    nodes_expanded = 0
+    nodes_generated = 1
+    max_frontier_size = 1
+
+    while frontier:
+        _, _, current_node = heapq.heappop(
+            frontier
+        )
+
+        traversal_order.append(
+            current_node.state
+        )
+
+        nodes_expanded += 1
+
+        if current_node.state == goal:
+            return SearchResult(
+                success=True,
+                path=reconstruct_path(current_node),
+                traversal_order=traversal_order,
+                nodes_expanded=nodes_expanded,
+                nodes_generated=nodes_generated,
+                max_frontier_size=max_frontier_size,
+                solution_depth=current_node.depth,
+                path_cost=current_node.path_cost,
+            )
+
+        for neighbor, edge_cost in graph.neighbors(
+            current_node.state
+        ):
+            if neighbor in visited:
+                continue
+
+            visited.add(neighbor)
+
+            child_node = SearchNode(
+                state=neighbor,
+                parent=current_node,
+                path_cost=(
+                    current_node.path_cost
+                    + edge_cost
+                ),
+                depth=current_node.depth + 1,
+            )
+
+            priority = heuristic(
+                neighbor,
+                goal,
+            )
+
+            heapq.heappush(
+                frontier,
+                (
+                    priority,
+                    next(counter),
+                    child_node,
+                ),
+            )
+
+            nodes_generated += 1
+
+        max_frontier_size = max(
+            max_frontier_size,
+            len(frontier),
+        )
+
+    return SearchResult(
+        success=False,
+        path=None,
+        traversal_order=traversal_order,
+        nodes_expanded=nodes_expanded,
+        nodes_generated=nodes_generated,
+        max_frontier_size=max_frontier_size,
+        solution_depth=None,
+        path_cost=None,
+    )
+    
+
+def a_star_search(
+    graph,
+    start,
+    goal,
+    heuristic,
+):
+    if start not in graph:
+        raise ValueError(
+            f"Start node {start!r} does not exist in graph."
+        )
+
+    if goal not in graph:
+        raise ValueError(
+            f"Goal node {goal!r} does not exist in graph."
+        )
+
+    start_node = SearchNode(
+        state=start,
+        parent=None,
+        path_cost=0.0,
+        depth=0,
+    )
+
+    counter = count()
+
+    frontier = []
+
+    start_priority = heuristic(
+        start,
+        goal,
+    )
+
+    heapq.heappush(
+        frontier,
+        (
+            start_priority,
+            next(counter),
+            start_node,
+        ),
+    )
+
+    best_cost = {
+        start: 0.0
+    }
+
+    traversal_order = []
+
+    nodes_expanded = 0
+    nodes_generated = 1
+    max_frontier_size = 1
+
+    while frontier:
+        _, _, current_node = (
+            heapq.heappop(frontier)
+        )
+
+        if (
+            current_node.path_cost
+            > best_cost[current_node.state]
+        ):
+            continue
+
+        traversal_order.append(
+            current_node.state
+        )
+
+        nodes_expanded += 1
+
+        if current_node.state == goal:
+            return SearchResult(
+                success=True,
+                path=reconstruct_path(current_node),
+                traversal_order=traversal_order,
+                nodes_expanded=nodes_expanded,
+                nodes_generated=nodes_generated,
+                max_frontier_size=max_frontier_size,
+                solution_depth=current_node.depth,
+                path_cost=current_node.path_cost,
+            )
+
+        for neighbor, edge_cost in graph.neighbors(
+            current_node.state
+        ):
+            new_cost = (
+                current_node.path_cost
+                + edge_cost
+            )
+
+            if (
+                neighbor not in best_cost
+                or new_cost < best_cost[neighbor]
+            ):
+                best_cost[neighbor] = new_cost
+
+                child_node = SearchNode(
+                    state=neighbor,
+                    parent=current_node,
+                    path_cost=new_cost,
+                    depth=current_node.depth + 1,
+                )
+
+                heuristic_cost = heuristic(
+                    neighbor,
+                    goal,
+                )
+
+                priority = (
+                    new_cost
+                    + heuristic_cost
+                )
+
+                heapq.heappush(
+                    frontier,
+                    (
+                        priority,
+                        next(counter),
+                        child_node,
+                    ),
+                )
+
+                nodes_generated += 1
+
+        max_frontier_size = max(
+            max_frontier_size,
+            len(frontier),
+        )
+
+    return SearchResult(
+        success=False,
+        path=None,
+        traversal_order=traversal_order,
+        nodes_expanded=nodes_expanded,
+        nodes_generated=nodes_generated,
+        max_frontier_size=max_frontier_size,
+        solution_depth=None,
+        path_cost=None,
+    )
+
