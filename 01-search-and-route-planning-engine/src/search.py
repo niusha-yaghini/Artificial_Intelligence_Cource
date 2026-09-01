@@ -184,9 +184,7 @@ def depth_limited_search(
     depth_limit,
 ):
     if depth_limit < 0:
-        raise ValueError(
-            "depth_limit must be non-negative."
-        )
+        raise ValueError("depth_limit must be non-negative.")
 
     if start not in graph:
         raise ValueError(
@@ -206,8 +204,6 @@ def depth_limited_search(
 
     frontier = [start_node]
 
-    visited = {start}
-
     traversal_order = []
 
     nodes_expanded = 0
@@ -217,10 +213,7 @@ def depth_limited_search(
     while frontier:
         current_node = frontier.pop()
 
-        traversal_order.append(
-            current_node.state
-        )
-
+        traversal_order.append(current_node.state)
         nodes_expanded += 1
 
         if current_node.state == goal:
@@ -237,13 +230,15 @@ def depth_limited_search(
         if current_node.depth >= depth_limit:
             continue
 
+        current_path = set(
+            reconstruct_path(current_node)
+        )
+
         for neighbor in reversed(
             graph.neighbors(current_node.state)
         ):
-            if neighbor in visited:
+            if neighbor in current_path:
                 continue
-
-            visited.add(neighbor)
 
             child_node = SearchNode(
                 state=neighbor,
@@ -252,7 +247,6 @@ def depth_limited_search(
             )
 
             frontier.append(child_node)
-
             nodes_generated += 1
 
         max_frontier_size = max(
@@ -269,4 +263,64 @@ def depth_limited_search(
         max_frontier_size=max_frontier_size,
         solution_depth=None,
     )
+
+
+# IDDFS = Repeated DLS
+def iterative_deepening_dfs(
+    graph,
+    start,
+    goal,
+    max_depth,
+):
+    if max_depth < 0:
+        raise ValueError("max_depth must be non-negative.")
+
+    total_nodes_expanded = 0
+    total_nodes_generated = 0
+    overall_max_frontier_size = 0
+
+    combined_traversal = []
+
+    for depth_limit in range(max_depth + 1):
+        result = depth_limited_search(
+            graph=graph,
+            start=start,
+            goal=goal,
+            depth_limit=depth_limit,
+        )
+
+        total_nodes_expanded += result.nodes_expanded
+        total_nodes_generated += result.nodes_generated
+
+        overall_max_frontier_size = max(
+            overall_max_frontier_size,
+            result.max_frontier_size,
+        )
+
+        combined_traversal.extend(
+            result.traversal_order
+        )
+
+        if result.success:
+            return SearchResult(
+                success=True,
+                path=result.path,
+                traversal_order=combined_traversal,
+                nodes_expanded=total_nodes_expanded,
+                nodes_generated=total_nodes_generated,
+                max_frontier_size=overall_max_frontier_size,
+                solution_depth=result.solution_depth,
+            )
+
+    return SearchResult(
+        success=False,
+        path=None,
+        traversal_order=combined_traversal,
+        nodes_expanded=total_nodes_expanded,
+        nodes_generated=total_nodes_generated,
+        max_frontier_size=overall_max_frontier_size,
+        solution_depth=None,
+    )
+
+
 
