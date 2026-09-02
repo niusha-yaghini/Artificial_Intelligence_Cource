@@ -40,12 +40,12 @@ def reconstruct_path(node: SearchNode) -> list[Any]:
     return path
 
 
-def bfs(graph, start, goal):
-    if start not in graph:
-        raise ValueError(f"Start node {start!r} does not exist in graph.")
+def bfs(environment, start, goal):
+    if start not in environment:
+        raise ValueError(f"Start node {start!r} does not exist in environment.")
 
-    if goal not in graph:
-        raise ValueError(f"Goal node {goal!r} does not exist in graph.")
+    if goal not in environment:
+        raise ValueError(f"Goal node {goal!r} does not exist in environment.")
 
     start_node = SearchNode(
         state=start,
@@ -80,7 +80,7 @@ def bfs(graph, start, goal):
                 path_cost=current_node.path_cost,
             )
 
-        for neighbor, edge_cost in graph.neighbors(current_node.state):
+        for neighbor, edge_cost in environment.neighbors(current_node.state):
             if neighbor in visited:
                 continue
 
@@ -116,12 +116,12 @@ def bfs(graph, start, goal):
     )
     
 
-def dfs(graph, start, goal):
-    if start not in graph:
-        raise ValueError(f"Start node {start!r} does not exist in graph.")
+def dfs(environment, start, goal):
+    if start not in environment:
+        raise ValueError(f"Start node {start!r} does not exist in environment.")
 
-    if goal not in graph:
-        raise ValueError(f"Goal node {goal!r} does not exist in graph.")
+    if goal not in environment:
+        raise ValueError(f"Goal node {goal!r} does not exist in environment.")
 
     start_node = SearchNode(
         state=start,
@@ -156,7 +156,7 @@ def dfs(graph, start, goal):
             )
 
         for neighbor, edge_cost in reversed(
-            graph.neighbors(current_node.state)
+            environment.neighbors(current_node.state)
         ):
             if neighbor in visited:
                 continue
@@ -194,7 +194,7 @@ def dfs(graph, start, goal):
     
 
 def depth_limited_search(
-    graph,
+    environment,
     start,
     goal,
     depth_limit,
@@ -202,14 +202,14 @@ def depth_limited_search(
     if depth_limit < 0:
         raise ValueError("depth_limit must be non-negative.")
 
-    if start not in graph:
+    if start not in environment:
         raise ValueError(
-            f"Start node {start!r} does not exist in graph."
+            f"Start node {start!r} does not exist in environment."
         )
 
-    if goal not in graph:
+    if goal not in environment:
         raise ValueError(
-            f"Goal node {goal!r} does not exist in graph."
+            f"Goal node {goal!r} does not exist in environment."
         )
 
     start_node = SearchNode(
@@ -252,7 +252,7 @@ def depth_limited_search(
         )
 
         for neighbor, edge_cost in reversed(
-            graph.neighbors(current_node.state)
+            environment.neighbors(current_node.state)
         ):
             if neighbor in current_path:
                 continue
@@ -289,7 +289,7 @@ def depth_limited_search(
 
 # IDDFS = Repeated DLS
 def iterative_deepening_dfs(
-    graph,
+    environment,
     start,
     goal,
     max_depth,
@@ -305,7 +305,7 @@ def iterative_deepening_dfs(
 
     for depth_limit in range(max_depth + 1):
         result = depth_limited_search(
-            graph=graph,
+            environment=environment,
             start=start,
             goal=goal,
             depth_limit=depth_limit,
@@ -349,18 +349,18 @@ def iterative_deepening_dfs(
 
 # UCS
 def uniform_cost_search(
-    graph,
+    environment,
     start,
     goal,
 ):
-    if start not in graph:
+    if start not in environment:
         raise ValueError(
-            f"Start node {start!r} does not exist in graph."
+            f"Start node {start!r} does not exist in environment."
         )
 
-    if goal not in graph:
+    if goal not in environment:
         raise ValueError(
-            f"Goal node {goal!r} does not exist in graph."
+            f"Goal node {goal!r} does not exist in environment."
         )
 
     start_node = SearchNode(
@@ -422,7 +422,7 @@ def uniform_cost_search(
                 path_cost=current_node.path_cost,
             )
 
-        for neighbor, edge_cost in graph.neighbors(
+        for neighbor, edge_cost in environment.neighbors(
             current_node.state
         ):
             new_cost = (
@@ -472,19 +472,19 @@ def uniform_cost_search(
 
 
 def greedy_best_first_search(
-    graph,
+    environment,
     start,
     goal,
     heuristic,
 ):
-    if start not in graph:
+    if start not in environment:
         raise ValueError(
-            f"Start node {start!r} does not exist in graph."
+            f"Start node {start!r} does not exist in environment."
         )
 
-    if goal not in graph:
+    if goal not in environment:
         raise ValueError(
-            f"Goal node {goal!r} does not exist in graph."
+            f"Goal node {goal!r} does not exist in environment."
         )
 
     start_node = SearchNode(
@@ -543,7 +543,7 @@ def greedy_best_first_search(
                 path_cost=current_node.path_cost,
             )
 
-        for neighbor, edge_cost in graph.neighbors(
+        for neighbor, edge_cost in environment.neighbors(
             current_node.state
         ):
             if neighbor in visited:
@@ -595,19 +595,19 @@ def greedy_best_first_search(
     
 
 def a_star_search(
-    graph,
+    environment,
     start,
     goal,
     heuristic,
 ):
-    if start not in graph:
+    if start not in environment:
         raise ValueError(
-            f"Start node {start!r} does not exist in graph."
+            f"Start node {start!r} does not exist in environment."
         )
 
-    if goal not in graph:
+    if goal not in environment:
         raise ValueError(
-            f"Goal node {goal!r} does not exist in graph."
+            f"Goal node {goal!r} does not exist in environment."
         )
 
     start_node = SearchNode(
@@ -674,7 +674,7 @@ def a_star_search(
                 path_cost=current_node.path_cost,
             )
 
-        for neighbor, edge_cost in graph.neighbors(
+        for neighbor, edge_cost in environment.neighbors(
             current_node.state
         ):
             new_cost = (

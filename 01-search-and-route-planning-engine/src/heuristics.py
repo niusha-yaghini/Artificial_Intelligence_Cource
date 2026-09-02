@@ -54,3 +54,17 @@ def weighted_manhattan_distance(
         current,
         goal,
     )
+    
+    
+def scaled_manhattan_distance(
+    current,
+    goal,
+    minimum_step_cost=1.0,
+):
+    return (
+        manhattan_distance(
+            current,
+            goal,
+        )
+        * minimum_step_cost
+    )
