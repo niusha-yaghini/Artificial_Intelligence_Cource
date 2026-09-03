@@ -64,7 +64,7 @@ def generate_solvable_grid(
   obstacle_probability,
   start,
   goal,
-  bfs_algorithm,
+  solvability_checker,
 ):
 
   while True:
@@ -75,7 +75,7 @@ def generate_solvable_grid(
       start,
       goal,
     )
-    result = bfs_algorithm(
+    result = solvability_checker(
       grid,
       start,
       goal,
@@ -86,7 +86,7 @@ def generate_solvable_grid(
     
 def generate_solvable_grid_from_config(
   config,
-  bfs_algorithm,
+  solvability_checker,
 ):
   while True:
     grid = GridEnvironment.random_grid(
@@ -96,7 +96,7 @@ def generate_solvable_grid_from_config(
       config.start,
       config.goal,
     )
-    result = bfs_algorithm(
+    result = solvability_checker(
       grid,
       config.start,
       config.goal,
@@ -108,7 +108,7 @@ def generate_solvable_grid_from_config(
 def run_configured_experiment(
   config,
   algorithms,
-  bfs_algorithm,
+  solvability_checker,
 ):
 
   all_results = []
@@ -116,7 +116,7 @@ def run_configured_experiment(
   for trial in range(config.trials):
     grid = generate_solvable_grid_from_config(
       config,
-      bfs_algorithm,
+      solvability_checker,
     )
     results = run_single_experiment(
       grid,

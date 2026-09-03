@@ -142,3 +142,37 @@ def print_terrain(grid):
     print(
       " ".join(values)
     )
+    
+
+def plot_benchmark_metric(
+    df,
+    x_column,
+    y_column,
+):
+
+    algorithms = df["Algorithm"].unique()
+
+    for algorithm in algorithms:
+
+        subset = df[
+            df["Algorithm"] == algorithm
+        ].sort_values(
+            by=x_column
+        )
+
+        plt.plot(
+            subset[x_column],
+            subset[y_column],
+            marker="o",
+            label=algorithm,
+        )
+
+    plt.xlabel(x_column)
+    plt.ylabel(y_column)
+
+    plt.legend()
+    plt.grid(True)
+
+    plt.show()
+    
+    
