@@ -1,17 +1,6 @@
-class GridEnvironment:
-    # def __init__(
-    #     self,
-    #     rows,
-    #     cols,
-    #     obstacles=None,
-    # ):
-    #     self.rows = rows
-    #     self.cols = cols
+import random
 
-    #     self.obstacles = set(
-    #         obstacles or []
-    #     )
-    
+class GridEnvironment:
     def __init__(
         self,
         rows,
@@ -89,4 +78,43 @@ class GridEnvironment:
       return self.terrain_costs.get(
           state,
           1.0,
+      )
+      
+    @staticmethod
+    def random_grid(
+        rows,
+        cols,
+        obstacle_probability=0.2,
+        start=None,
+        goal=None,
+    ):
+        obstacles = set()
+
+        for row in range(rows):
+            for col in range(cols):
+
+                state = (row, col)
+
+                if state == start:
+                    continue
+
+                if state == goal:
+                    continue
+
+                if random.random() < obstacle_probability:
+                    obstacles.add(state)
+
+        return GridEnvironment(
+            rows=rows,
+            cols=cols,
+            obstacles=obstacles,
+        )
+        
+    def __repr__(self):
+      return (
+          f"GridEnvironment("
+          f"rows={self.rows}, "
+          f"cols={self.cols}, "
+          f"obstacles={len(self.obstacles)}"
+          f")"
       )

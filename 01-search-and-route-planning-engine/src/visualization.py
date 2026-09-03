@@ -125,3 +125,20 @@ def plot_grid(
         )
 
   plt.show()
+  
+  
+def print_terrain(grid):
+  for row in range(grid.rows):
+    values = []
+    for col in range(grid.cols):
+      state = (row, col)
+
+      values.append(
+        str(
+          grid.cost(state)
+        )
+      )
+
+    print(
+      " ".join(values)
+    )
