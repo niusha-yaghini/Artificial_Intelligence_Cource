@@ -176,3 +176,29 @@ def plot_benchmark_metric(
     plt.show()
     
     
+def plot_bar_metric(
+    df,
+    x_column,
+    y_column,
+):
+
+    plt.bar(
+        df[x_column],
+        df[y_column],
+    )
+
+    plt.xlabel(
+        x_column
+    )
+
+    plt.ylabel(
+        y_column
+    )
+
+    plt.xticks(
+        rotation=45
+    )
+
+    plt.grid(True)
+
+    plt.show()

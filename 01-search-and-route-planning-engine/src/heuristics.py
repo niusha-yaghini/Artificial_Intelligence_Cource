@@ -1,6 +1,5 @@
 import math
 
-
 # This spacing is very natural for four-way grids.
 def manhattan_distance(
     current,
@@ -56,7 +55,7 @@ def weighted_manhattan_distance(
     )
     
     
-def scaled_manhattan_distance(
+def inadmissible_weighted_manhattan(
     current,
     goal,
     minimum_step_cost=1.0,
