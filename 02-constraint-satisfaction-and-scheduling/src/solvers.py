@@ -295,3 +295,5 @@ def backtrack_mrv_degree_with_stats(
     stats.backtracks += 1
 
     return None
+
+

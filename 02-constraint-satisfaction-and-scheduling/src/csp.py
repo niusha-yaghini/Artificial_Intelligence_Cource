@@ -36,3 +36,12 @@ class CSP:
                 return False
 
         return True
+
+    def copy_domains(
+        self
+    ):
+        return {
+            variable: domain.copy()
+            for variable, domain
+            in self.domains.items()
+        }
