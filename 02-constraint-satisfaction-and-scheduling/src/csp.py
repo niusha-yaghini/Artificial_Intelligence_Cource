@@ -5,10 +5,12 @@ class CSP:
         variables,
         domains,
         constraints,
+        neighbors,
     ):
         self.variables = variables
         self.domains = domains
         self.constraints = constraints
+        self.neighbors = neighbors
         
     def validate(self):
         for variable in self.variables:

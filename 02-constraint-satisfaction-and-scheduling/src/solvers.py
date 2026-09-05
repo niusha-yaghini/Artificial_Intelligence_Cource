@@ -91,3 +91,57 @@ def select_unassigned_variable_mrv(
         key=lambda variable:
             len(csp.domains[variable])
     )
+    
+
+def backtracking_search_mrv_degree(csp):
+    return backtrack_mrv_degree(
+        csp,
+        {}
+    )
+    
+def backtrack_mrv_degree(
+    csp,
+    assignment,
+):
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = select_unassigned_variable_mrv_degree(
+        csp,
+        assignment,
+    )
+
+    for value in csp.domains[variable]:
+        assignment[variable] = value
+
+        if csp.is_consistent(
+            assignment
+        ):
+            result = backtrack_mrv_degree(
+                csp,
+                assignment,
+            )
+            if result:
+                return result
+
+        del assignment[variable]
+
+    return None
+    
+def select_unassigned_variable_mrv_degree(
+    csp,
+    assignment,
+):
+    unassigned = [
+        variable
+        for variable in csp.variables
+        if variable not in assignment
+    ]
+    
+    return min(
+        unassigned,
+        key=lambda variable: (
+            len(csp.domains[variable]),
+            -len(csp.neighbors[variable])
+        )
+    )
