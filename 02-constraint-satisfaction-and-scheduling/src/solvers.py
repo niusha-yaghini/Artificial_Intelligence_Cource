@@ -1,6 +1,9 @@
 from src.metrics import SolverStats
 
 
+# ============================================================
+# Basic Backtracking
+# ============================================================
 def backtracking_search(csp):
     return backtrack(
         csp,
@@ -41,6 +44,9 @@ def backtrack(
     return None
 
 
+# ============================================================
+# Static MRV
+# ============================================================
 def backtracking_search_mrv(csp):
 
     return backtrack_mrv(
@@ -95,6 +101,9 @@ def select_unassigned_variable_mrv(
     )
     
 
+# ============================================================
+# MRV + Degree
+# ============================================================
 def backtracking_search_mrv_degree(csp):
     return backtrack_mrv_degree(
         csp,
@@ -149,8 +158,9 @@ def select_unassigned_variable_mrv_degree(
     )
     
 
-# Functions with stats
-
+# ============================================================
+# Instrumented Solvers
+# ============================================================
 def backtracking_search_with_stats(csp):
     stats = SolverStats()
 
@@ -293,7 +303,259 @@ def backtrack_mrv_degree_with_stats(
         del assignment[variable]
 
     stats.backtracks += 1
+    return None
+
+
+# ============================================================
+# Forward Checking
+# ============================================================
+def backtracking_search_forward_checking(
+    csp,
+):
+    domains = csp.copy_domains()
+
+    return backtrack_forward_checking(
+        csp,
+        {},
+        domains,
+    )
+    
+def backtrack_forward_checking(
+    csp,
+    assignment,
+    domains,
+):
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = select_unassigned_variable_mrv_degree(
+        csp,
+        assignment,
+    )
+
+    for value in domains[variable]:
+        assignment[variable] = value
+
+        new_domains = {
+            var: domain.copy()
+            for var, domain
+            in domains.items()
+        }
+
+        new_domains[variable] = [
+            value
+        ]
+
+        if forward_checking(
+            csp,
+            variable,
+            assignment,
+            new_domains,
+        ):
+            result = backtrack_forward_checking(
+                csp,
+                assignment,
+                new_domains,
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
+
+    return None
+
+def forward_checking(
+    csp,
+    variable,
+    assignment,
+    domains,
+):
+    for neighbor in csp.neighbors[variable]:
+        if neighbor in assignment:
+            continue
+
+        revised_domain = []
+
+        for value in domains[neighbor]:
+            assignment[neighbor] = value
+
+            if csp.is_consistent(
+                assignment
+            ):
+                revised_domain.append(
+                    value
+                )
+
+            del assignment[neighbor]
+
+        domains[neighbor] = revised_domain
+
+        if len(domains[neighbor]) == 0:
+            return False
+
+    return True
+
+
+# ============================================================
+# Dynamic MRV + Forward Checking
+# ============================================================
+def select_unassigned_variable_dynamic_mrv_degree(
+    csp,
+    assignment,
+    domains,
+):
+    unassigned = [
+        variable
+        for variable in csp.variables
+        if variable not in assignment
+    ]
+
+    return min(
+        unassigned,
+        key=lambda variable: (
+            len(domains[variable]),
+            -sum(
+                1
+                for neighbor in csp.neighbors[variable]
+                if neighbor not in assignment
+            ),
+        ),
+    )
+    
+def backtracking_search_dynamic_mrv_forward_checking(
+    csp,
+):
+    domains = csp.copy_domains()
+
+    return backtrack_dynamic_mrv_forward_checking(
+        csp,
+        {},
+        domains,
+    )
+
+def backtrack_dynamic_mrv_forward_checking(
+    csp,
+    assignment,
+    domains,
+):
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = (
+        select_unassigned_variable_dynamic_mrv_degree(
+            csp,
+            assignment,
+            domains,
+        )
+    )
+
+    for value in domains[variable]:
+
+        assignment[variable] = value
+
+        new_domains = {
+            var: domain.copy()
+            for var, domain
+            in domains.items()
+        }
+
+        new_domains[variable] = [value]
+
+        if forward_checking(
+            csp,
+            variable,
+            assignment,
+            new_domains,
+        ):
+
+            result = (
+                backtrack_dynamic_mrv_forward_checking(
+                    csp,
+                    assignment,
+                    new_domains,
+                )
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
 
     return None
 
 
+# ============================================================
+# Dynamic MRV + Forward Checking + Stats
+# ============================================================
+def backtracking_search_dynamic_fc_with_stats(
+    csp,
+):
+    stats = SolverStats()
+
+    domains = csp.copy_domains()
+
+    solution = backtrack_dynamic_fc_with_stats(
+        csp,
+        {},
+        domains,
+        stats,
+    )
+
+    return solution, stats
+
+def backtrack_dynamic_fc_with_stats(
+    csp,
+    assignment,
+    domains,
+    stats,
+):
+    stats.nodes_visited += 1
+
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = (
+        select_unassigned_variable_dynamic_mrv_degree(
+            csp,
+            assignment,
+            domains,
+        )
+    )
+
+    for value in domains[variable]:
+        stats.assignments_tried += 1
+
+        assignment[variable] = value
+
+        new_domains = {
+            var: domain.copy()
+            for var, domain
+            in domains.items()
+        }
+
+        new_domains[variable] = [
+            value
+        ]
+
+        if forward_checking(
+            csp,
+            variable,
+            assignment,
+            new_domains,
+        ):
+            result = backtrack_dynamic_fc_with_stats(
+                csp,
+                assignment,
+                new_domains,
+                stats,
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
+
+    stats.backtracks += 1
+
+    return None
