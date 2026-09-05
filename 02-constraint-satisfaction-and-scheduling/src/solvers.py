@@ -710,3 +710,201 @@ def backtrack_ac3_with_stats(
     stats.backtracks += 1
 
     return None
+
+
+# ============================================================
+# LCV
+# ============================================================
+def order_values_lcv(
+    csp,
+    variable,
+    assignment,
+    domains,
+):
+    value_scores = []
+
+    for value in domains[variable]:
+        eliminated = 0
+
+        assignment[variable] = value
+
+        for neighbor in csp.neighbors[variable]:
+            if neighbor in assignment:
+                continue
+
+            for neighbor_value in domains[neighbor]:
+                test_assignment = {
+                    variable: value,
+                    neighbor: neighbor_value,
+                }
+
+                if not csp.is_consistent(
+                    test_assignment
+                ):
+                    eliminated += 1
+
+        del assignment[variable]
+
+        value_scores.append(
+            (
+                value,
+                eliminated,
+            )
+        )
+
+    value_scores.sort(
+        key=lambda x: x[1]
+    )
+
+    return [
+        value
+        for value, score
+        in value_scores
+    ]
+    
+def backtracking_search_lcv(
+    csp,
+):
+    domains = csp.copy_domains()
+    return backtrack_lcv(
+        csp,
+        {},
+        domains,
+    )
+    
+def backtrack_lcv(
+    csp,
+    assignment,
+    domains,
+):
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = (
+        select_unassigned_variable_dynamic_mrv_degree(
+            csp,
+            assignment,
+            domains,
+        )
+    )
+
+    values = order_values_lcv(
+        csp,
+        variable,
+        assignment,
+        domains,
+    )
+
+    for value in values:
+        assignment[variable] = value
+
+        new_domains = {
+            var: domain.copy()
+            for var, domain
+            in domains.items()
+        }
+
+        new_domains[variable] = [
+            value
+        ]
+
+        if forward_checking(
+            csp,
+            variable,
+            assignment,
+            new_domains,
+        ):
+            result = backtrack_lcv(
+                csp,
+                assignment,
+                new_domains,
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
+
+    return None
+
+
+# ============================================================
+# LCV + Stats
+# ============================================================
+def backtracking_search_lcv_with_stats(
+    csp,
+):
+    stats = SolverStats()
+    domains = csp.copy_domains()
+
+    solution = backtrack_lcv_with_stats(
+        csp,
+        {},
+        domains,
+        stats,
+    )
+
+    return solution, stats
+
+def backtrack_lcv_with_stats(
+    csp,
+    assignment,
+    domains,
+    stats,
+):
+    stats.nodes_visited += 1
+
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = (
+        select_unassigned_variable_dynamic_mrv_degree(
+            csp,
+            assignment,
+            domains,
+        )
+    )
+
+    values = order_values_lcv(
+        csp,
+        variable,
+        assignment,
+        domains,
+    )
+
+    for value in values:
+        stats.assignments_tried += 1
+
+        assignment[variable] = value
+
+        new_domains = {
+            var: domain.copy()
+            for var, domain
+            in domains.items()
+        }
+
+        new_domains[variable] = [
+            value
+        ]
+
+        if forward_checking(
+            csp,
+            variable,
+            assignment,
+            new_domains,
+        ):
+            result = backtrack_lcv_with_stats(
+                csp,
+                assignment,
+                new_domains,
+                stats,
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
+
+    stats.backtracks += 1
+
+    return None
