@@ -1,5 +1,6 @@
 from src.metrics import SolverStats
-
+from src.constraint_propagation import ac3
+from src.metrics import SolverStats
 
 # ============================================================
 # Basic Backtracking
@@ -545,6 +546,156 @@ def backtrack_dynamic_fc_with_stats(
             new_domains,
         ):
             result = backtrack_dynamic_fc_with_stats(
+                csp,
+                assignment,
+                new_domains,
+                stats,
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
+
+    stats.backtracks += 1
+
+    return None
+
+
+# ============================================================
+# AC-3
+# ============================================================
+def backtracking_search_ac3(
+    csp,
+):
+    domains = csp.copy_domains()
+
+    if not ac3(
+        csp,
+        domains,
+    ):
+        return None
+
+    return backtrack_ac3(
+        csp,
+        {},
+        domains,
+    )
+
+def backtrack_ac3(
+    csp,
+    assignment,
+    domains,
+):
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = (
+        select_unassigned_variable_dynamic_mrv_degree(
+            csp,
+            assignment,
+            domains,
+        )
+    )
+
+    for value in domains[variable]:
+        assignment[variable] = value
+
+        new_domains = {
+            var: domain.copy()
+            for var, domain
+            in domains.items()
+        }
+
+        new_domains[variable] = [
+            value
+        ]
+
+        if forward_checking(
+            csp,
+            variable,
+            assignment,
+            new_domains,
+        ):
+            result = backtrack_ac3(
+                csp,
+                assignment,
+                new_domains,
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
+
+    return None
+
+
+# ============================================================
+# AC-3 + Stats
+# ============================================================
+def backtracking_search_ac3_with_stats(
+    csp,
+):
+    stats = SolverStats()
+    domains = csp.copy_domains()
+
+    if not ac3(
+        csp,
+        domains,
+    ):
+        return None, stats
+
+    solution = backtrack_ac3_with_stats(
+        csp,
+        {},
+        domains,
+        stats,
+    )
+
+    return solution, stats
+
+def backtrack_ac3_with_stats(
+    csp,
+    assignment,
+    domains,
+    stats,
+):
+    stats.nodes_visited += 1
+
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = (
+        select_unassigned_variable_dynamic_mrv_degree(
+            csp,
+            assignment,
+            domains,
+        )
+    )
+
+    for value in domains[variable]:
+        stats.assignments_tried += 1
+
+        assignment[variable] = value
+
+        new_domains = {
+            var: domain.copy()
+            for var, domain
+            in domains.items()
+        }
+
+        new_domains[variable] = [
+            value
+        ]
+
+        if forward_checking(
+            csp,
+            variable,
+            assignment,
+            new_domains,
+        ):
+            result = backtrack_ac3_with_stats(
                 csp,
                 assignment,
                 new_domains,

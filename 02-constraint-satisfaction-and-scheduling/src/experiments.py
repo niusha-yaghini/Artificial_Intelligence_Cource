@@ -1,11 +1,9 @@
 import time
-
 from src.solvers import (
     backtracking_search_with_stats,
     backtracking_search_mrv_with_stats,
     backtracking_search_mrv_degree_with_stats,
 )
-
 
 def run_solver_experiment(
     problem,
