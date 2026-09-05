@@ -1,3 +1,6 @@
+from src.metrics import SolverStats
+
+
 def backtracking_search(csp):
     return backtrack(
         csp,
@@ -30,7 +33,6 @@ def backtrack(
                 csp,
                 assignment
             )
-
             if result:
                 return result
 
@@ -145,3 +147,55 @@ def select_unassigned_variable_mrv_degree(
             -len(csp.neighbors[variable])
         )
     )
+    
+
+def backtracking_search_with_stats(csp):
+    stats = SolverStats()
+
+    solution = backtrack_with_stats(
+        csp,
+        {},
+        stats,
+    )
+
+    return solution, stats
+
+def backtrack_with_stats(
+    csp,
+    assignment,
+    stats,
+):
+    stats.nodes_visited += 1
+
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = None
+
+    for v in csp.variables:
+        if v not in assignment:
+            variable = v
+            break
+
+    for value in csp.domains[variable]:
+        stats.assignments_tried += 1
+
+        assignment[variable] = value
+
+        if csp.is_consistent(
+            assignment
+        ):
+            result = backtrack_with_stats(
+                csp,
+                assignment,
+                stats,
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
+
+    stats.backtracks += 1
+
+    return None
