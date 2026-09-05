@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 
-
 class Constraint(ABC):
-
     @abstractmethod
     def is_satisfied(
         self,
@@ -11,7 +9,6 @@ class Constraint(ABC):
         pass
     
 class BinaryConstraint(Constraint):
-
     def __init__(
         self,
         var1,
@@ -20,12 +17,10 @@ class BinaryConstraint(Constraint):
         self.var1 = var1
         self.var2 = var2
 
-
     def is_satisfied(
         self,
         assignment,
     ):
-
         if (
             self.var1 not in assignment
             or

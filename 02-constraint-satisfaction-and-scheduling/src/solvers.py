@@ -149,6 +149,8 @@ def select_unassigned_variable_mrv_degree(
     )
     
 
+# Functions with stats
+
 def backtracking_search_with_stats(csp):
     stats = SolverStats()
 
@@ -186,6 +188,100 @@ def backtrack_with_stats(
             assignment
         ):
             result = backtrack_with_stats(
+                csp,
+                assignment,
+                stats,
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
+
+    stats.backtracks += 1
+
+    return None
+
+
+def backtracking_search_mrv_with_stats(csp):
+    stats = SolverStats()
+    solution = backtrack_mrv_with_stats(
+        csp,
+        {},
+        stats,
+    )
+    return solution, stats
+
+def backtrack_mrv_with_stats(
+    csp,
+    assignment,
+    stats,
+):
+    stats.nodes_visited += 1
+
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = select_unassigned_variable_mrv(
+        csp,
+        assignment,
+    )
+
+    for value in csp.domains[variable]:
+        stats.assignments_tried += 1
+
+        assignment[variable] = value
+
+        if csp.is_consistent(
+            assignment
+        ):
+            result = backtrack_mrv_with_stats(
+                csp,
+                assignment,
+                stats,
+            )
+
+            if result:
+                return result
+
+        del assignment[variable]
+
+    stats.backtracks += 1
+
+    return None
+
+
+def backtracking_search_mrv_degree_with_stats(csp):
+    stats = SolverStats()
+    solution = backtrack_mrv_degree_with_stats(
+        csp,
+        {},
+        stats,
+    )
+    return solution, stats
+
+def backtrack_mrv_degree_with_stats(
+    csp,
+    assignment,
+    stats,
+):
+    stats.nodes_visited += 1
+
+    if len(assignment) == len(csp.variables):
+        return assignment
+
+    variable = select_unassigned_variable_mrv_degree(
+        csp,
+        assignment,
+    )
+
+    for value in csp.domains[variable]:
+        stats.assignments_tried += 1
+        assignment[variable] = value
+        if csp.is_consistent(
+            assignment
+        ):
+            result = backtrack_mrv_degree_with_stats(
                 csp,
                 assignment,
                 stats,
