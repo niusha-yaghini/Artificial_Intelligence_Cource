@@ -6,20 +6,15 @@ def measure_execution_time(
     **kwargs,
 ):
     start_time = time.perf_counter()
-
     result = algorithm(
         *args,
         **kwargs
     )
-
     end_time = time.perf_counter()
-
     elapsed_time = (
         end_time - start_time
     )
-
     return result, elapsed_time
-  
   
 def benchmark_algorithm(
     name,
@@ -27,7 +22,6 @@ def benchmark_algorithm(
     *args,
     **kwargs,
 ):
-
     result, execution_time = (
         measure_execution_time(
             algorithm,
@@ -35,7 +29,6 @@ def benchmark_algorithm(
             **kwargs,
         )
     )
-
     return {
         "Algorithm": name,
         "Success": result.success,
@@ -49,7 +42,6 @@ def benchmark_algorithm(
     
     
 def summarize_results(df):
-
     return (
         df
         .groupby("Algorithm")

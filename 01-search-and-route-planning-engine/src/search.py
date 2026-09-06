@@ -4,7 +4,6 @@ from collections import deque
 import heapq
 from itertools import count
 
-
 @dataclass
 class SearchNode:
     state: Any
@@ -12,7 +11,6 @@ class SearchNode:
     action: Optional[Any] = None
     path_cost: float = 0.0
     depth: int = 0
-
 
 @dataclass
 class SearchResult:
@@ -25,21 +23,20 @@ class SearchResult:
     solution_depth: Optional[int]
     path_cost: Optional[float]
 
-
 def reconstruct_path(node: SearchNode) -> list[Any]:
     path = []
-
     current = node
-
     while current is not None:
         path.append(current.state)
         current = current.parent
 
     path.reverse()
-
     return path
 
 
+# ============================================================
+# BFS
+# ============================================================
 def bfs(environment, start, goal):
     if start not in environment:
         raise ValueError(f"Start node {start!r} does not exist in environment.")
@@ -116,6 +113,9 @@ def bfs(environment, start, goal):
     )
     
 
+# ============================================================
+# DFS
+# ============================================================
 def dfs(environment, start, goal):
     if start not in environment:
         raise ValueError(f"Start node {start!r} does not exist in environment.")
@@ -191,8 +191,11 @@ def dfs(environment, start, goal):
         solution_depth=None,
         path_cost=None,
     )
-    
 
+
+# ============================================================
+# DLS
+# ============================================================
 def depth_limited_search(
     environment,
     start,
@@ -219,9 +222,7 @@ def depth_limited_search(
     )
 
     frontier = [start_node]
-
     traversal_order = []
-
     nodes_expanded = 0
     nodes_generated = 1
     max_frontier_size = 1
@@ -287,7 +288,9 @@ def depth_limited_search(
     )
 
 
-# IDDFS = Repeated DLS
+# ============================================================
+# IDDFS
+# ============================================================
 def iterative_deepening_dfs(
     environment,
     start,
@@ -347,7 +350,9 @@ def iterative_deepening_dfs(
     )
 
 
+# ============================================================
 # UCS
+# ============================================================
 def uniform_cost_search(
     environment,
     start,
@@ -388,7 +393,6 @@ def uniform_cost_search(
     }
 
     traversal_order = []
-
     nodes_expanded = 0
     nodes_generated = 1
     max_frontier_size = 1
@@ -471,6 +475,9 @@ def uniform_cost_search(
     )
 
 
+# ============================================================
+# Greedy
+# ============================================================
 def greedy_best_first_search(
     environment,
     start,
@@ -495,9 +502,7 @@ def greedy_best_first_search(
     )
 
     counter = count()
-
     frontier = []
-
     start_priority = heuristic(
         start,
         goal,
@@ -513,9 +518,7 @@ def greedy_best_first_search(
     )
 
     visited = {start}
-
     traversal_order = []
-
     nodes_expanded = 0
     nodes_generated = 1
     max_frontier_size = 1
@@ -574,7 +577,6 @@ def greedy_best_first_search(
                     child_node,
                 ),
             )
-
             nodes_generated += 1
 
         max_frontier_size = max(
@@ -594,6 +596,9 @@ def greedy_best_first_search(
     )
     
 
+# ============================================================
+# A*
+# ============================================================
 def a_star_search(
     environment,
     start,
@@ -618,9 +623,7 @@ def a_star_search(
     )
 
     counter = count()
-
     frontier = []
-
     start_priority = heuristic(
         start,
         goal,
@@ -640,7 +643,6 @@ def a_star_search(
     }
 
     traversal_order = []
-
     nodes_expanded = 0
     nodes_generated = 1
     max_frontier_size = 1
