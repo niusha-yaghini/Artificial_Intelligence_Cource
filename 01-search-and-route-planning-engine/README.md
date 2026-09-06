@@ -5,12 +5,11 @@ This project implements and evaluates classical AI search algorithms for route p
 
 01-search-and-route-planning/
 │
-├── 01_search_problem_and_graph_basics.ipynb
-├── 02_bfs_and_dfs_from_scratch.ipynb
-├── 03_uniform_cost_search.ipynb
-├── 04_heuristic_search_greedy_and_astar.ipynb
-├── 05_grid_route_planning.ipynb
-├── 06_search_algorithm_benchmark.ipynb
+├── 01_bfs_and_dfs_from_scratch.ipynb
+├── 02_uniform_cost_search.ipynb
+├── 03_heuristic_search_greedy_and_astar.ipynb
+├── 04_grid_route_planning.ipynb
+├── 05_search_algorithm_benchmark.ipynb
 ├── src/
 │   ├── config.py
 │   ├── experiments.py
@@ -20,29 +19,12 @@ This project implements and evaluates classical AI search algorithms for route p
 │   ├── heuristics.py
 │   ├── metrics.py
 │   └── visualization.py
-├── tests/
 ├── results/
 └── README.md
 
 ---------------------------------------------------------
 
-01_search_problem_and_graph_basics.ipynb
-Concepts:
-State
-State Space
-Action
-Transition Model
-Goal
-Path Cost
-Graph
-Search Tree
-Node
-Frontier
-Visited
-
-And we analyze a few small graphs manually.
-
-02_bfs_and_dfs_from_scratch.ipynb
+01_bfs_and_dfs_from_scratch.ipynb
 Queue
 Stack
 BFS
@@ -52,7 +34,7 @@ IDDFS
 Cycle Detection
 Path Reconstruction
 
-03_uniform_cost_search.ipynb
+02_uniform_cost_search.ipynb
 Weighted Graph
 Priority Queue
 heapq
@@ -60,7 +42,7 @@ Path Cost
 UCS
 Dijkstra connection
 
-04_heuristic_search_greedy_and_astar.ipynb
+03_heuristic_search_greedy_and_astar.ipynb
 Heuristic
 Manhattan
 Euclidean
@@ -69,8 +51,7 @@ A*
 Admissibility
 Consistency
 
-05_grid_route_planning.ipynb
-
+04_grid_route_planning.ipynb
 Main project:
 Grid
 Obstacle
@@ -78,8 +59,8 @@ Weighted Terrain
 Start
 Goal
 Search Visualization
-06_search_algorithm_benchmark.ipynb
 
+05_search_algorithm_benchmark.ipynb
 
 Final comparison:
 BFS
@@ -112,17 +93,13 @@ Success Rate
 - Greedy Best First Search
 - A*
 
-
 The project includes:
-
 - Graph-based environments
 - Grid-based navigation
 - Obstacles
 - Weighted terrain costs
 
-
 Key Concepts Demonstrated:
-
 - State representation
 - Frontier management
 - Explored set
@@ -132,5 +109,3 @@ Key Concepts Demonstrated:
 - Completeness
 - Time complexity
 - Space complexity
-
-
