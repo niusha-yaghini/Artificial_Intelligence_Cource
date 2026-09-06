@@ -144,7 +144,7 @@ def minimax_value_with_stats(
     )
 
     if game.terminal_test(state):
-        stats.terminals_reached += 1
+        stats.terminal_states  += 1
         return game.utility(state)
 
     player = state[1]
@@ -286,3 +286,117 @@ def depth_limited_minimax_value(
             )
 
         return value
+    
+    
+# ============================================================
+# Depth-Limited Min-Max + Stats
+# ============================================================
+def depth_limited_minimax_with_stats(
+    game,
+    state,
+    depth_limit,
+    evaluation_function,
+):
+    stats = SearchStats()
+    player = state[1]
+
+    if player == "X":
+        best_value = -inf
+    else:
+        best_value = inf
+
+    best_action = None
+
+    for action in game.actions(state):
+        value = depth_limited_value_with_stats(
+            game,
+            game.result(
+                state,
+                action,
+            ),
+            depth=1,
+            depth_limit=depth_limit,
+            evaluation_function=evaluation_function,
+            stats=stats,
+        )
+
+        if player == "X":
+            if value > best_value:
+                best_value = value
+                best_action = action
+        else:
+            if value < best_value:
+                best_value = value
+                best_action = action
+
+    return best_action, stats
+
+def depth_limited_value_with_stats(
+    game,
+    state,
+    depth,
+    depth_limit,
+    evaluation_function,
+    stats,
+):
+    stats.nodes_visited += 1
+
+    stats.max_depth = max(
+        stats.max_depth,
+        depth,
+    )
+
+    if game.terminal_test(state):
+        stats.terminal_states += 1
+        return game.utility(state)
+
+    if depth == depth_limit:
+        return evaluation_function(
+            game,
+            state,
+        )
+
+    player = state[1]
+
+    if player == "X":
+        value = -inf
+
+        for action in game.actions(state):
+            value = max(
+                value,
+                depth_limited_value_with_stats(
+                    game,
+                    game.result(
+                        state,
+                        action,
+                    ),
+                    depth + 1,
+                    depth_limit,
+                    evaluation_function,
+                    stats,
+                )
+            )
+        return value
+
+    else:
+        value = inf
+
+        for action in game.actions(state):
+            value = min(
+                value,
+                depth_limited_value_with_stats(
+                    game,
+                    game.result(
+                        state,
+                        action,
+                    ),
+                    depth + 1,
+                    depth_limit,
+                    evaluation_function,
+                    stats,
+                )
+            )
+
+        return value
+    
+    
