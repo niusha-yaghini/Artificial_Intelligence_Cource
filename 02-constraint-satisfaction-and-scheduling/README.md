@@ -14,3 +14,12 @@ But the tool is common:
 
 -------------------------------------------
 
+Step 1: Map Coloring Example Foundation 
+Step 2: MRV — Minimum Remaining Values 
+Step 3: Degree Heuristic + MRV Tie Breaking 
+Step 4: Benchmark Framework 
+Step 5: Multi Trial Benchmark 
+Step 6: Forward Checking 
+Step 7: Arc Consistency (AC-3) 
+Step 8: LCV (Least Constraining Value) 
+Step 9: Total Comparisons 
