@@ -73,7 +73,6 @@ class TicTacToe(Game):
         self,
         state,
     ):
-
         board, _ = state
 
         return [
@@ -137,9 +136,9 @@ class TicTacToe(Game):
         winner = self.winner(board)
 
         if winner == "X":
-            return 1
+            return 10000
 
         if winner == "O":
-            return -1
+            return -10000
 
         return 0
