@@ -66,3 +66,28 @@ Alpha-Beta says: If you are sure that a path will never be chosen, don't check i
 
 MCTS says: Instead of examining the entire future, I simulate the future a few thousand times and learn from experience which moves are better.
 MCTS Uses UCT (Upper Confidence Bound applied to Trees). MCTS gets better over time. in Minimax, If Depth is constant It gives the same answer. But in MCTS, The more Simulation the better the estimate.
+
+---------------------------------------
+
+minimax.py:
+    min-max algorithm implementation
+
+alphabeta.py:
+    alpha beta algorithm implementation
+
+mcts.py:
+    mcts algorithm implementation
+
+games.py:
+    Tic-Tac_toe game implementation
+
+metrics.py:
+    "Nodes Visited"
+    "Terminal States"
+    "Max Depth"
+
+evaluation.py:
+    evaluation function implementation (lookahead)
+
+ordering.py:
+    ordering heuristic for alphabeta algorithm (choosing better values first)
