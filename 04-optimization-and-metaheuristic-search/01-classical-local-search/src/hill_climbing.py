@@ -1,3 +1,6 @@
+import random
+
+
 def hill_climbing(
     objective_function,
     initial_state,
@@ -30,3 +33,32 @@ def hill_climbing(
         current = best_neighbor
 
     return current
+
+
+def random_restart_hill_climbing(
+    objective_function,
+    get_neighbors,
+    search_range,
+    restarts=10,
+):
+    best_solution = None
+    best_value = float("-inf")
+
+    for _ in range(restarts):
+        initial_state = random.uniform(
+            search_range[0],
+            search_range[1],
+        )
+        solution = hill_climbing(
+            objective_function,
+            initial_state,
+            get_neighbors,
+        )
+        value = objective_function(
+            solution
+        )
+        if value > best_value:
+            best_value = value
+            best_solution = solution
+
+    return best_solution
