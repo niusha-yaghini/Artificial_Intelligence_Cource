@@ -91,3 +91,14 @@ evaluation.py:
 
 ordering.py:
     ordering heuristic for alphabeta algorithm (choosing better values first)
+
+
+------------------------------------------
+
+# Adversarial Search Summary
+
+Adversarial search problems involve decision making where an agent competes against an opponent whose actions affect the outcome.
+
+Minimax performs exhaustive search assuming an optimal opponent. Alpha-Beta pruning improves Minimax by removing branches that cannot influence the final decision. Move ordering further improves Alpha-Beta efficiency by exploring promising actions earlier, increasing pruning opportunities.
+
+When exhaustive search becomes infeasible, Monte Carlo Tree Search (MCTS) provides an alternative simulation-based approach. MCTS iteratively improves decisions through Selection, Expansion, Simulation, and Backpropagation. Unlike Minimax, MCTS estimates action values through repeated simulations rather than exact future evaluation.

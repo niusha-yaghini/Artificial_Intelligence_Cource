@@ -10,6 +10,33 @@ import random
     # mcts_search()
     # mcts_decision()
 
+class MCTSNode:
+    def __init__(
+        self,
+        game,
+        state,
+        parent=None,
+        action=None,
+    ):
+        self.game = game
+        self.state = state
+        self.parent = parent
+        
+        # It is the movement we have made from Parent to this Node.
+        self.action = action
+        self.children = []
+        self.visits = 0
+        self.wins = 0
+        self.untried_actions = list(
+            game.actions(state)
+        )
+          
+    def fully_expanded(self):
+        return len(
+            self.untried_actions
+        ) == 0
+
+
 def uct_value(
         node,
         exploration_constant=1.4,
@@ -49,25 +76,20 @@ def select(node):
 def expand(node):
     if not node.untried_actions:
         return node
-
     action = node.untried_actions.pop()
-
     new_state = node.game.result(
         node.state,
         action,
     )
-
     child = MCTSNode(
         node.game,
         new_state,
         parent=node,
         action=action,
     )
-
     node.children.append(
         child
     )
-
     return child
 
 def simulate(
@@ -106,28 +128,58 @@ def mcts_reward(
         return -1
     return 0
 
-class MCTSNode:
-    def __init__(
-        self,
+def backpropagate(
+    node,
+    reward,
+):
+    while node is not None:
+        node.visits += 1
+        node.wins += reward
+        node = node.parent
+
+def mcts_search(
+    game,
+    state,
+    iterations=1000,
+):
+    root = MCTSNode(
         game,
         state,
-        parent=None,
-        action=None,
-    ):
-        self.game = game
-        self.state = state
-        self.parent = parent
-        
-        # It is the movement we have made from Parent to this Node.
-        self.action = action
-        self.children = []
-        self.visits = 0
-        self.wins = 0
-        self.untried_actions = list(
-            game.actions(state)
+    )
+    for _ in range(iterations):
+        node = select(
+            root
         )
-          
-    def fully_expanded(self):
-        return len(
-            self.untried_actions
-        ) == 0
+        if not game.terminal_test(
+            node.state
+        ):
+            node = expand(
+                node
+            )
+        reward = simulate(
+            node
+        )
+        backpropagate(
+            node,
+            reward,
+        )
+    return root
+
+def mcts_decision(
+    game,
+    state,
+    iterations=1000,
+):
+    root = mcts_search(
+        game,
+        state,
+        iterations,
+    )
+
+    best_child = max(
+        root.children,
+        key=lambda child:
+            child.visits
+    )
+
+    return best_child.action
