@@ -1,6 +1,5 @@
 import random
 
-
 def hill_climbing(
     objective_function,
     initial_state,
@@ -34,7 +33,6 @@ def hill_climbing(
 
     return current
 
-
 def random_restart_hill_climbing(
     objective_function,
     get_neighbors,
@@ -62,3 +60,12 @@ def random_restart_hill_climbing(
             best_solution = solution
 
     return best_solution
+
+def get_neighbors(
+    x,
+    step_size=1
+):
+    return [
+        x - step_size,
+        x + step_size,
+    ]
