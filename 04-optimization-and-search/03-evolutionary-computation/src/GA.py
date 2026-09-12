@@ -33,3 +33,42 @@ def evaluate_population(
         )
 
     return fitness_values
+
+def tournament_selection(
+    population,
+    fitness_values,
+    tournament_size,
+):
+    tournament_indices = random.sample(
+        range(len(population)),
+        tournament_size,
+    )
+    winner_index = max(
+        tournament_indices,
+        key=lambda index:
+        fitness_values[index],
+    )
+    
+    return population[winner_index]
+
+def elitism(
+    population,
+    fitness_values,
+    elite_ratio,
+):
+    elite_count = int(
+        len(population)
+        *
+        elite_ratio
+    )
+    ranked_indices = sorted(
+        range(len(population)),
+        key=lambda i: fitness_values[i],
+        reverse=True,
+    )
+    elites = [
+        population[i]
+        for i in ranked_indices[:elite_count]
+    ]
+
+    return elites
