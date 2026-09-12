@@ -1,3 +1,6 @@
+import random
+
+
 class KnapsackProblem:
     def __init__(
         self,
@@ -29,3 +32,28 @@ class KnapsackProblem:
             return 0
 
         return total_value
+    
+def create_random_knapsack(
+    n_items=100,
+    seed=42,
+):
+    random.seed(seed)
+
+    weights = [
+        random.randint(1,50)
+        for _ in range(n_items)
+    ]
+    values = [
+        random.randint(10,100)
+        for _ in range(n_items)
+    ]
+    capacity = int(
+        sum(weights)
+        *
+        0.4
+    )
+    return (
+        weights,
+        values,
+        capacity,
+    )
