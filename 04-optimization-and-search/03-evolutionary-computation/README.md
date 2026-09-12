@@ -31,7 +31,6 @@ The main goal of this section is to understand the design principles behind evol
 
 
 
-
 ## Problems
 
 The `problems` directory contains optimization problem definitions that are independent from the optimization algorithms.
