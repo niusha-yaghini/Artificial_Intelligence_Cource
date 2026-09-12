@@ -72,3 +72,54 @@ def elitism(
     ]
 
     return elites
+
+def roulette_selection(
+    population,
+    fitness_values,
+):
+    total_fitness = sum(
+        fitness_values
+    )
+    probabilities = [
+        fitness / total_fitness
+        for fitness in fitness_values
+    ]
+    selected_index = random.choices(
+        range(len(population)),
+        weights=probabilities,
+        k=1,
+    )[0]
+
+    return population[selected_index]
+
+def single_point_crossover(
+    parent1,
+    parent2,
+    crossover_rate=0.8,
+    crossover_point_ratio=0.5,
+):
+    if random.random() > crossover_rate:
+        return (
+            parent1.copy(),
+            parent2.copy(),
+        )
+
+    point = int(
+        len(parent1)
+        *
+        crossover_point_ratio
+    )
+
+    child1 = (
+        parent1[:point]
+        +
+        parent2[point:]
+    )
+
+    child2 = (
+        parent2[:point]
+        +
+        parent1[point:]
+    )
+
+    return child1, child2
