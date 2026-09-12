@@ -147,3 +147,58 @@ This structure provides the foundation required for advanced applications such a
 | Evolutionary Computation | Evolve a population of candidate solutions | GA, DE, GP |
 | Swarm Intelligence | Collective behavior of multiple agents | PSO, ACO, ABC |
 | Advanced Metaheuristics | Modern nature-inspired search strategies | GWO, CS |
+
+---------------------------------------
+
+The nature of each Algorithm requires different types of problems:
+
+Genetic Algorithm
+
+Suitable for:
+Binary problems
+Permutation problems
+Combinatorial problems
+
+Such as:
+Knapsack
+Feature Selection
+TSP
+
+
+Differential Evolution
+
+Its nature:
+Continuous optimization.
+
+Thus, it is more natural for:
+
+Rastrigin
+Ackley
+Rosenbrock
+
+
+Genetic Programming
+
+It employs a distinct representation:
+Tree
+
+Therefore, suitable problems include:
+Symbolic Regression
+Formula Discovery
+
+
+PSO
+
+Suitable for:
+Continuous Search
+
+
+ACO
+
+It is natural for:
+Graph Problems
+
+Such as:
+TSP
+Routing
+Scheduling
